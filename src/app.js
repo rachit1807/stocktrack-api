@@ -1,0 +1,15 @@
+import express from 'express';
+import helmet from 'helmet';
+import {rateLimit} from 'express-rate-limit';
+import mongoose from 'mongoose';
+import {fileURLToPath} from 'node:url';
+import * as c from './controllers/productController.js';
+import {errorHandler} from './middleware/errorHandler.js';
+export const app=express();
+app.set('trust proxy',1);app.disable('x-powered-by');app.use(helmet({contentSecurityPolicy:{directives:{'style-src':["'self'","'unsafe-inline'",'https://fonts.googleapis.com'],'font-src':["'self'",'https://fonts.gstatic.com']}}}));app.use(express.json({limit:'20kb'}));
+app.get('/api/health',(req,res)=>res.status(mongoose.connection.readyState===1?200:503).json({status:mongoose.connection.readyState===1?'connected':'unavailable'}));
+app.use('/api',rateLimit({windowMs:60000,limit:180,standardHeaders:'draft-8',legacyHeaders:false}));
+app.route('/api/products').get(c.list).post(c.create);
+app.route('/api/products/:id').all(c.validateId).get(c.read).patch(c.update).delete(c.remove);
+app.use('/api',(req,res)=>res.status(404).json({message:'Endpoint not found'}));
+app.use(express.static(fileURLToPath(new URL('../public',import.meta.url))));app.use(errorHandler);

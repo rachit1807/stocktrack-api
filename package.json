@@ -1,0 +1,26 @@
+{
+  "name": "stocktrack-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Inventory workspace powered by Express, MongoDB and Mongoose",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env src/server.js",
+    "dev": "node --env-file-if-exists=.env src/server.js --local",
+    "seed": "node --env-file-if-exists=.env src/utils/seedDatabase.js",
+    "test": "node --test --test-concurrency=1"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.1.0",
+    "helmet": "^8.1.0",
+    "mongoose": "^8.19.0"
+  },
+  "devDependencies": {
+    "mongodb-memory-server": "^10.2.0",
+    "supertest": "^7.1.0"
+  }
+}
