@@ -12,7 +12,7 @@ A considered inventory workspace for managing products, tracking stock levels, a
 
 **MongoDB + Mongoose · Responsive interface · Light / dark themes**
 
-[Getting started](#getting-started) · [API reference](#api-reference) · [Data model](#data-model) · [Testing](#testing)
+[Live demo](https://stocktrack-api-rachit.onrender.com) · [Getting started](#getting-started) · [API reference](#api-reference) · [Data model](#data-model) · [Testing](#testing)
 
 </div>
 
@@ -23,6 +23,21 @@ A considered inventory workspace for managing products, tracking stock levels, a
 StockTrack connects an Express API to MongoDB through Mongoose and provides an interface for managing a small product inventory. Built for **Code More — Week 5, Task 2: Database Integration with Mongoose**.
 
 The interface pairs a quiet off-white workspace with lime accents, Manrope headings, a serif headline accent, and a persistent navigation rail. On smaller screens, products become compact cards and the navigation moves to the top.
+
+## Preview
+
+**Desktop · light theme**
+
+![StockTrack desktop light theme](docs/screenshots/desktop-light.png)
+
+<details>
+<summary>Dark theme and mobile view</summary>
+
+![StockTrack desktop dark theme](docs/screenshots/desktop-dark.png)
+
+<img src="docs/screenshots/mobile-light.png" width="390" alt="StockTrack responsive mobile layout" />
+
+</details>
 
 ## Features
 
@@ -219,6 +234,10 @@ Tests use an isolated MongoDB instance, never your Atlas data. They cover the co
 Import `docs/StockTrack.postman_collection.json` into Postman. Set `baseUrl` to the local or deployed origin. Run **Create product** before read/update/delete: its test script saves `productId` automatically. The collection includes expected validation and missing-document cases.
 
 ## Deployment on Render
+
+**Live app:** https://stocktrack-api-rachit.onrender.com
+
+Hosted as one Node.js web service in Singapore, connected to MongoDB Atlas. The free hosting plan can take a little time to wake after inactivity.
 
 1. Push this repository to GitHub.
 2. Create a Node web service connected to the repository.
