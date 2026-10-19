@@ -3,6 +3,7 @@
 <img src="public/favicon.svg" width="72" alt="StockTrack logo" />
 
 # StockTrack API
+
 ### Inventory, in order.
 
 A considered inventory workspace for managing products, tracking stock levels, and keeping the everyday under control.
@@ -39,15 +40,15 @@ The interface pairs a quiet off-white workspace with lime accents, Manrope headi
 
 ## Technology
 
-| Layer | Technology | Purpose |
-|---|---|---|
-| Interface | HTML, CSS, JavaScript | Responsive views and browser interactions |
-| Server | Node.js, Express 5 | HTTP routes and static frontend hosting |
-| Database | MongoDB | Persistent product documents |
-| Modeling | Mongoose | Schema validation, indexes, timestamps, and queries |
-| HTTP protection | Helmet, express-rate-limit | Security headers and request limits |
-| Verification | Node test runner, Supertest | API integration tests |
-| Local development | mongodb-memory-server | Isolated temporary MongoDB for demo and tests |
+| Layer             | Technology                  | Purpose                                             |
+| ----------------- | --------------------------- | --------------------------------------------------- |
+| Interface         | HTML, CSS, JavaScript       | Responsive views and browser interactions           |
+| Server            | Node.js, Express 5          | HTTP routes and static frontend hosting             |
+| Database          | MongoDB                     | Persistent product documents                        |
+| Modeling          | Mongoose                    | Schema validation, indexes, timestamps, and queries |
+| HTTP protection   | Helmet, express-rate-limit  | Security headers and request limits                 |
+| Verification      | Node test runner, Supertest | API integration tests                               |
+| Local development | mongodb-memory-server       | Isolated temporary MongoDB for demo and tests       |
 
 ## Getting started
 
@@ -101,12 +102,12 @@ Open this project folder, then use **Run and Debug**:
 
 ### Available commands
 
-| Command | Behavior |
-|---|---|
-| `npm run dev` | Start isolated, seeded local demo |
-| `npm start` | Start persistent MongoDB-backed server |
+| Command        | Behavior                                                    |
+| -------------- | ----------------------------------------------------------- |
+| `npm run dev`  | Start isolated, seeded local demo                           |
+| `npm start`    | Start persistent MongoDB-backed server                      |
 | `npm run seed` | Insert missing sample products into the configured database |
-| `npm test` | Run integration tests against isolated MongoDB |
+| `npm test`     | Run integration tests against isolated MongoDB              |
 
 ## Architecture
 
@@ -146,17 +147,17 @@ stocktrack-api/
 
 MongoDB stores products in the `products` collection. Mongoose adds `_id`, `createdAt`, and `updatedAt`.
 
-| Field | Type | Rules / default |
-|---|---|---|
-| `name` | String | Required; trimmed; 2–100 characters |
-| `sku` | String | Required; uppercase; unique index; 3–24 letters, numbers, or hyphens |
-| `category` | String | Required; Electronics, Workspace, Accessories, or Lifestyle |
-| `price` | Number | Required; 0–10,000,000; currency shown in INR |
-| `quantity` | Integer | Required; 0–1,000,000 |
-| `reorderLevel` | Integer | 0–1,000,000; defaults to 10 |
-| `supplier` | String | Trimmed; up to 100 characters; defaults to empty |
-| `notes` | String | Trimmed; up to 500 characters; defaults to empty |
-| `createdAt` / `updatedAt` | Date | Automatically managed timestamps |
+| Field                     | Type    | Rules / default                                                      |
+| ------------------------- | ------- | -------------------------------------------------------------------- |
+| `name`                    | String  | Required; trimmed; 2–100 characters                                  |
+| `sku`                     | String  | Required; uppercase; unique index; 3–24 letters, numbers, or hyphens |
+| `category`                | String  | Required; Electronics, Workspace, Accessories, or Lifestyle          |
+| `price`                   | Number  | Required; 0–10,000,000; currency shown in INR                        |
+| `quantity`                | Integer | Required; 0–1,000,000                                                |
+| `reorderLevel`            | Integer | 0–1,000,000; defaults to 10                                          |
+| `supplier`                | String  | Trimmed; up to 100 characters; defaults to empty                     |
+| `notes`                   | String  | Trimmed; up to 500 characters; defaults to empty                     |
+| `createdAt` / `updatedAt` | Date    | Automatically managed timestamps                                     |
 
 Unknown fields and MongoDB update operators in client input are rejected. Updates run schema validators. The unique SKU index is enforced by MongoDB; duplicates return `409`.
 
@@ -166,14 +167,14 @@ Stock status is derived: zero quantity is **Out of stock**; quantity at or below
 
 Base path: `/api`. Requests and responses use JSON, except successful deletion (`204`).
 
-| Method | Endpoint | Success | Purpose |
-|---|---|---|---|
-| GET | `/health` | 200 | Database connection health; 503 if unavailable |
-| GET | `/products` | 200 | List products, newest first |
-| POST | `/products` | 201 | Create a product |
-| GET | `/products/:id` | 200 | Read one product |
-| PATCH | `/products/:id` | 200 | Update supplied fields |
-| DELETE | `/products/:id` | 204 | Permanently delete one product |
+| Method | Endpoint        | Success | Purpose                                        |
+| ------ | --------------- | ------- | ---------------------------------------------- |
+| GET    | `/health`       | 200     | Database connection health; 503 if unavailable |
+| GET    | `/products`     | 200     | List products, newest first                    |
+| POST   | `/products`     | 201     | Create a product                               |
+| GET    | `/products/:id` | 200     | Read one product                               |
+| PATCH  | `/products/:id` | 200     | Update supplied fields                         |
+| DELETE | `/products/:id` | 204     | Permanently delete one product                 |
 
 ### Create a product
 
@@ -187,14 +188,14 @@ Successful create/read/update responses use `{ "data": { ...product } }`; lists 
 
 ### Errors
 
-| Status | Meaning |
-|---|---|
-| 400 | Invalid fields, malformed ID, invalid JSON, or empty update |
-| 404 | Product or endpoint not found |
-| 409 | Duplicate SKU |
-| 413 | Request body exceeds 20 KB |
-| 429 | API rate limit exceeded |
-| 500 | Unexpected server error; internal details are not exposed |
+| Status | Meaning                                                     |
+| ------ | ----------------------------------------------------------- |
+| 400    | Invalid fields, malformed ID, invalid JSON, or empty update |
+| 404    | Product or endpoint not found                               |
+| 409    | Duplicate SKU                                               |
+| 413    | Request body exceeds 20 KB                                  |
+| 429    | API rate limit exceeded                                     |
+| 500    | Unexpected server error; internal details are not exposed   |
 
 Validation errors include field messages:
 

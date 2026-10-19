@@ -1,11 +1,314 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#c3f451"><meta name="description" content="StockTrack — a considered workspace for your inventory. Track products, monitor stock and keep everything in order."><title>StockTrack — Inventory, in order.</title><link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script></head><body>
-<aside class="rail"><a class="brand" href="/" aria-label="StockTrack home"><span class="brand-icon">s<span>↗</span></span><span>stocktrack<span class="brand-dot">®</span></span></a><div class="rail-label">YOUR WORKSPACE</div><nav aria-label="Main navigation"><button class="nav active" data-view="all"><span>▦</span> Inventory <span id="navCount" class="nav-count">0</span></button><button class="nav" data-view="low"><span>◉</span> Stock alerts <span id="alertCount" class="nav-count">0</span></button><button class="nav" data-view="insights"><span>↗</span> Insights</button></nav><div class="rail-note"><div class="small-mono">LESS CHAOS.<br>MORE CLARITY.</div><p>A little order goes a long way.</p><span class="note-line">↗</span></div><div class="rail-bottom"><span class="avatar">RT</span><div>Rachit Tripathi<small>Inventory workspace</small></div></div></aside>
-<div class="workspace"><header><div class="breadcrumbs">Workspace <span>/</span> <strong id="crumb">Inventory</strong></div><div class="header-actions"><span class="connection" id="connection"><i></i> Connecting</span><button id="theme" class="icon-button" aria-label="Switch color theme" title="Switch color theme">◐</button></div></header>
-<main><section class="intro"><div><div class="eyebrow">A PLACE FOR EVERYTHING / 001</div><h1 id="pageTitle">Inventory, <em>in order.</em></h1><p id="pageSubtitle">Know what’s in stock. Make room for what’s next.</p></div><button class="primary" id="addProduct"><span>＋</span> Add product</button></section>
-<section class="stats" aria-label="Inventory summary"><article><span class="stat-label">TOTAL PRODUCTS <span>↗</span></span><div id="totalProducts" class="stat-number">—</div><small>Distinct items in your catalog</small></article><article><span class="stat-label">INVENTORY VALUE <span>₹</span></span><div id="totalValue" class="stat-number">—</div><small>Based on available stock</small></article><article class="lime"><span class="stat-label">NEEDS ATTENTION <span>◉</span></span><div id="lowStock" class="stat-number">—</div><small>Items at or below reorder level</small></article><article><span class="stat-label">TOTAL UNITS <span>▦</span></span><div id="totalUnits" class="stat-number">—</div><small>Ready for their next chapter</small></article></section>
-<section id="insights" class="insights" hidden><div><div class="eyebrow">THE BIGGER PICTURE</div><h2>What’s on your shelves?</h2><p>Your inventory, grouped by category.</p></div><div id="categoryBars"></div></section>
-<section class="catalog"><div class="catalog-heading"><div><h2 id="catalogTitle">The stockroom <span id="resultCount">0 items</span></h2><p>Good things, all accounted for.</p></div><button id="export" class="secondary">↓ Export CSV</button></div><div class="toolbar"><div class="tabs" role="group" aria-label="Stock filter"><button data-filter="all" class="selected">All products</button><button data-filter="low">Low stock</button><button data-filter="out">Out of stock</button></div><div class="filters"><label class="search"><span>⌕</span><input type="search" id="search" placeholder="Find a product…" aria-label="Search products"></label><select id="category" aria-label="Filter by category"><option value="all">All categories</option><option>Electronics</option><option>Workspace</option><option>Accessories</option><option>Lifestyle</option></select><select id="sort" aria-label="Sort products"><option value="newest">Newest first</option><option value="name">Name A–Z</option><option value="quantity">Stock: low to high</option><option value="price">Price: low to high</option></select></div></div>
-<div id="errorBanner" class="error-banner" hidden><span></span><button id="retry" class="secondary">Try again</button></div><div id="loading" class="loading">Getting your shelves ready…</div><div class="table-wrap" id="tableWrap" hidden><table><thead><tr><th>PRODUCT / SKU</th><th>CATEGORY</th><th>UNIT PRICE</th><th>STOCK LEVEL</th><th>STATUS</th><th><span class="sr-only">Actions</span></th></tr></thead><tbody id="products"></tbody></table></div><div id="empty" class="empty" hidden><span>▦</span><h3>A little room for something new.</h3><p>No products match this view. Try another filter or add your first product.</p><button class="secondary" id="resetFilters">Reset filters</button></div><div class="table-footer"><span id="showing">Showing 0 products</span><div class="pagination"><button id="prev" class="icon-button" aria-label="Previous page">←</button><span id="pageNumber">1 / 1</span><button id="next" class="icon-button" aria-label="Next page">→</button></div></div></section>
-<footer><span>STOCKTRACK <span class="footer-dot">●</span> INVENTORY, CONSIDERED.</span><span>Built for a better everyday.</span></footer></main></div>
-<dialog id="productDialog"><form id="productForm"><div class="dialog-top"><div><div class="eyebrow">MAKE SPACE FOR SOMETHING GOOD</div><h2 id="dialogTitle">Add a product</h2></div><button type="button" class="icon-button" data-close="productDialog" aria-label="Close form">×</button></div><p class="dialog-description">The details that keep your stockroom running smoothly.</p><input type="hidden" name="id"><div class="form-grid"><label class="full">Product name <input name="name" required minlength="2" maxlength="100" placeholder="e.g. Studio headphones"></label><label>SKU <input name="sku" required pattern="[A-Za-z0-9-]{3,24}" maxlength="24" placeholder="AUD-001"><small>Unique letters, numbers and hyphens</small></label><label>Category <select name="category" required><option value="">Choose a category</option><option>Electronics</option><option>Workspace</option><option>Accessories</option><option>Lifestyle</option></select></label><label>Unit price (₹) <input name="price" type="number" min="0" max="10000000" step="0.01" required placeholder="0.00"></label><label>Quantity <input name="quantity" type="number" min="0" max="1000000" step="1" required placeholder="0"></label><label>Reorder level <input name="reorderLevel" type="number" min="0" max="1000000" step="1" value="10" required></label><label>Supplier <input name="supplier" maxlength="100" placeholder="Optional"></label><label class="full">Notes <textarea name="notes" maxlength="500" rows="2" placeholder="Anything worth remembering? (optional)"></textarea></label></div><p id="formError" class="form-error" role="alert"></p><div class="dialog-actions"><button type="button" class="secondary" data-close="productDialog">Cancel</button><button type="submit" class="primary" id="saveProduct">Save product ↗</button></div></form></dialog>
-<dialog id="deleteDialog"><div class="dialog-top"><h2>Remove this product?</h2><button class="icon-button" data-close="deleteDialog" aria-label="Close">×</button></div><p id="deleteMessage"></p><p>This permanently removes the product from your inventory.</p><p id="deleteError" class="form-error" role="alert"></p><div class="dialog-actions"><button class="secondary" data-close="deleteDialog">Keep product</button><button class="danger" id="confirmDelete">Remove product</button></div></dialog><div id="toast" role="status" aria-live="polite"></div></body></html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#c3f451" />
+    <meta
+      name="description"
+      content="StockTrack — a considered workspace for your inventory. Track products, monitor stock and keep everything in order."
+    />
+    <title>StockTrack — Inventory, in order.</title>
+    <link rel="icon" href="/favicon.svg" />
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <aside class="rail">
+      <a class="brand" href="/" aria-label="StockTrack home"
+        ><span class="brand-icon">s<span>↗</span></span
+        ><span>stocktrack<span class="brand-dot">®</span></span></a
+      >
+      <div class="rail-label">YOUR WORKSPACE</div>
+      <nav aria-label="Main navigation">
+        <button class="nav active" data-view="all">
+          <span>▦</span> Inventory
+          <span id="navCount" class="nav-count">0</span></button
+        ><button class="nav" data-view="low">
+          <span>◉</span> Stock alerts
+          <span id="alertCount" class="nav-count">0</span></button
+        ><button class="nav" data-view="insights">
+          <span>↗</span> Insights
+        </button>
+      </nav>
+      <div class="rail-note">
+        <div class="small-mono">LESS CHAOS.<br />MORE CLARITY.</div>
+        <p>A little order goes a long way.</p>
+        <span class="note-line">↗</span>
+      </div>
+      <div class="rail-bottom">
+        <span class="avatar">RT</span>
+        <div>Rachit Tripathi<small>Inventory workspace</small></div>
+      </div>
+    </aside>
+    <div class="workspace">
+      <header>
+        <div class="breadcrumbs">
+          Workspace <span>/</span> <strong id="crumb">Inventory</strong>
+        </div>
+        <div class="header-actions">
+          <span class="connection" id="connection"><i></i> Connecting</span
+          ><button
+            id="theme"
+            class="icon-button"
+            aria-label="Switch color theme"
+            title="Switch color theme"
+          >
+            ◐
+          </button>
+        </div>
+      </header>
+      <main>
+        <section class="intro">
+          <div>
+            <div class="eyebrow">A PLACE FOR EVERYTHING / 001</div>
+            <h1 id="pageTitle">Inventory, <em>in order.</em></h1>
+            <p id="pageSubtitle">
+              Know what’s in stock. Make room for what’s next.
+            </p>
+          </div>
+          <button class="primary" id="addProduct">
+            <span>＋</span> Add product
+          </button>
+        </section>
+        <section class="stats" aria-label="Inventory summary">
+          <article>
+            <span class="stat-label">TOTAL PRODUCTS <span>↗</span></span>
+            <div id="totalProducts" class="stat-number">—</div>
+            <small>Distinct items in your catalog</small>
+          </article>
+          <article>
+            <span class="stat-label">INVENTORY VALUE <span>₹</span></span>
+            <div id="totalValue" class="stat-number">—</div>
+            <small>Based on available stock</small>
+          </article>
+          <article class="lime">
+            <span class="stat-label">NEEDS ATTENTION <span>◉</span></span>
+            <div id="lowStock" class="stat-number">—</div>
+            <small>Items at or below reorder level</small>
+          </article>
+          <article>
+            <span class="stat-label">TOTAL UNITS <span>▦</span></span>
+            <div id="totalUnits" class="stat-number">—</div>
+            <small>Ready for their next chapter</small>
+          </article>
+        </section>
+        <section id="insights" class="insights" hidden>
+          <div>
+            <div class="eyebrow">THE BIGGER PICTURE</div>
+            <h2>What’s on your shelves?</h2>
+            <p>Your inventory, grouped by category.</p>
+          </div>
+          <div id="categoryBars"></div>
+        </section>
+        <section class="catalog">
+          <div class="catalog-heading">
+            <div>
+              <h2 id="catalogTitle">
+                The stockroom <span id="resultCount">0 items</span>
+              </h2>
+              <p>Good things, all accounted for.</p>
+            </div>
+            <button id="export" class="secondary">↓ Export CSV</button>
+          </div>
+          <div class="toolbar">
+            <div class="tabs" role="group" aria-label="Stock filter">
+              <button data-filter="all" class="selected">All products</button
+              ><button data-filter="low">Low stock</button
+              ><button data-filter="out">Out of stock</button>
+            </div>
+            <div class="filters">
+              <label class="search"
+                ><span>⌕</span
+                ><input
+                  type="search"
+                  id="search"
+                  placeholder="Find a product…"
+                  aria-label="Search products" /></label
+              ><select id="category" aria-label="Filter by category">
+                <option value="all">All categories</option>
+                <option>Electronics</option>
+                <option>Workspace</option>
+                <option>Accessories</option>
+                <option>Lifestyle</option></select
+              ><select id="sort" aria-label="Sort products">
+                <option value="newest">Newest first</option>
+                <option value="name">Name A–Z</option>
+                <option value="quantity">Stock: low to high</option>
+                <option value="price">Price: low to high</option>
+              </select>
+            </div>
+          </div>
+          <div id="errorBanner" class="error-banner" hidden>
+            <span></span><button id="retry" class="secondary">Try again</button>
+          </div>
+          <div id="loading" class="loading">Getting your shelves ready…</div>
+          <div class="table-wrap" id="tableWrap" hidden>
+            <table>
+              <thead>
+                <tr>
+                  <th>PRODUCT / SKU</th>
+                  <th>CATEGORY</th>
+                  <th>UNIT PRICE</th>
+                  <th>STOCK LEVEL</th>
+                  <th>STATUS</th>
+                  <th><span class="sr-only">Actions</span></th>
+                </tr>
+              </thead>
+              <tbody id="products"></tbody>
+            </table>
+          </div>
+          <div id="empty" class="empty" hidden>
+            <span>▦</span>
+            <h3>A little room for something new.</h3>
+            <p>
+              No products match this view. Try another filter or add your first
+              product.
+            </p>
+            <button class="secondary" id="resetFilters">Reset filters</button>
+          </div>
+          <div class="table-footer">
+            <span id="showing">Showing 0 products</span>
+            <div class="pagination">
+              <button id="prev" class="icon-button" aria-label="Previous page">
+                ←</button
+              ><span id="pageNumber">1 / 1</span
+              ><button id="next" class="icon-button" aria-label="Next page">
+                →
+              </button>
+            </div>
+          </div>
+        </section>
+        <footer>
+          <span
+            >STOCKTRACK <span class="footer-dot">●</span> INVENTORY,
+            CONSIDERED.</span
+          ><span>Built for a better everyday.</span>
+        </footer>
+      </main>
+    </div>
+    <dialog id="productDialog">
+      <form id="productForm">
+        <div class="dialog-top">
+          <div>
+            <div class="eyebrow">MAKE SPACE FOR SOMETHING GOOD</div>
+            <h2 id="dialogTitle">Add a product</h2>
+          </div>
+          <button
+            type="button"
+            class="icon-button"
+            data-close="productDialog"
+            aria-label="Close form"
+          >
+            ×
+          </button>
+        </div>
+        <p class="dialog-description">
+          The details that keep your stockroom running smoothly.
+        </p>
+        <input type="hidden" name="id" />
+        <div class="form-grid">
+          <label class="full"
+            >Product name
+            <input
+              name="name"
+              required
+              minlength="2"
+              maxlength="100"
+              placeholder="e.g. Studio headphones" /></label
+          ><label
+            >SKU
+            <input
+              name="sku"
+              required
+              pattern="[A-Za-z0-9-]{3,24}"
+              maxlength="24"
+              placeholder="AUD-001"
+            /><small>Unique letters, numbers and hyphens</small></label
+          ><label
+            >Category
+            <select name="category" required>
+              <option value="">Choose a category</option>
+              <option>Electronics</option>
+              <option>Workspace</option>
+              <option>Accessories</option>
+              <option>Lifestyle</option>
+            </select></label
+          ><label
+            >Unit price (₹)
+            <input
+              name="price"
+              type="number"
+              min="0"
+              max="10000000"
+              step="0.01"
+              required
+              placeholder="0.00" /></label
+          ><label
+            >Quantity
+            <input
+              name="quantity"
+              type="number"
+              min="0"
+              max="1000000"
+              step="1"
+              required
+              placeholder="0" /></label
+          ><label
+            >Reorder level
+            <input
+              name="reorderLevel"
+              type="number"
+              min="0"
+              max="1000000"
+              step="1"
+              value="10"
+              required /></label
+          ><label
+            >Supplier
+            <input
+              name="supplier"
+              maxlength="100"
+              placeholder="Optional" /></label
+          ><label class="full"
+            >Notes
+            <textarea
+              name="notes"
+              maxlength="500"
+              rows="2"
+              placeholder="Anything worth remembering? (optional)"
+            ></textarea>
+          </label>
+        </div>
+        <p id="formError" class="form-error" role="alert"></p>
+        <div class="dialog-actions">
+          <button type="button" class="secondary" data-close="productDialog">
+            Cancel</button
+          ><button type="submit" class="primary" id="saveProduct">
+            Save product ↗
+          </button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="deleteDialog">
+      <div class="dialog-top">
+        <h2>Remove this product?</h2>
+        <button
+          class="icon-button"
+          data-close="deleteDialog"
+          aria-label="Close"
+        >
+          ×
+        </button>
+      </div>
+      <p id="deleteMessage"></p>
+      <p>This permanently removes the product from your inventory.</p>
+      <p id="deleteError" class="form-error" role="alert"></p>
+      <div class="dialog-actions">
+        <button class="secondary" data-close="deleteDialog">Keep product</button
+        ><button class="danger" id="confirmDelete">Remove product</button>
+      </div>
+    </dialog>
+    <div id="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>

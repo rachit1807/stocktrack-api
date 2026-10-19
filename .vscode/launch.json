@@ -1,1 +1,17 @@
-{"version":"0.2.0","configurations":[{"type":"node-terminal","request":"launch","name":"StockTrack: local demo","command":"npm run dev"},{"type":"node-terminal","request":"launch","name":"StockTrack: Atlas","command":"npm start"}]}
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node-terminal",
+      "request": "launch",
+      "name": "StockTrack: local demo",
+      "command": "npm run dev"
+    },
+    {
+      "type": "node-terminal",
+      "request": "launch",
+      "name": "StockTrack: Atlas",
+      "command": "npm start"
+    }
+  ]
+}
